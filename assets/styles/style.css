@@ -38,6 +38,7 @@
 
 .detail-highlights li {
     padding-left: 1em;
+    font-style: italic;
 }
 
 .detail-highlights li:before {
@@ -81,7 +82,6 @@
     }
 
     .detail-item-content.col-sm-9 {
-        border-right: 1px solid #ccd6dd;
     }
 }
 
@@ -95,10 +95,10 @@
 }
 
 .label-keyword {
-    color: #282828;
+    color: #337ab7;
     font-weight: normal;
-    border: 2px solid #66757f;
-    padding: 10px;
+    border: 1px solid #337ab7;
+    padding: 5px 15px !important;
     margin: 5px;
 }
 
@@ -109,7 +109,7 @@
 
 #skills h4,
 #interests h4 {
-    /* font-weight: bold; */
+    font-weight: bold;
 }
 
 #references .detail-item {
