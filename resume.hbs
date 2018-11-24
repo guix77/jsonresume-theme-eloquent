@@ -59,6 +59,12 @@
 
             <hr>
 
+            <h3 class="text-uppercase">
+              <a class="text-muted" href="#skills">
+                Personal info
+                <span class="anchor-icon" aria-hidden="true"></span>
+              </a>
+            </h3>
             <ul class="basics nav nav-stacked">
               {{#if phone}}
                 <li class="basics-item">
@@ -92,6 +98,14 @@
                   </a>
                 </li>
               {{/if}}
+            </ul>
+            <h3 class="text-uppercase">
+              <a class="text-muted" href="#skills">
+                Links
+                <span class="anchor-icon" aria-hidden="true"></span>
+              </a>
+            </h3>
+            <ul class="basics nav nav-stacked">
               {{#if website}}
                 <li class="basics-item">
                   <a href="{{website}}" rel="author" target="_blank" rel="noreferrer noopener" itemprop="url">
@@ -100,35 +114,70 @@
                   </a>
                 </li>
               {{/if}}
+              {{#if profiles}}
+              {{#each profiles}}
+                <li class="profile-item">
+                  <a href="{{url}}" target="_blank" rel="noreferrer noopener">
+                    <span class="icon"><i aria-hidden="true" class="icon-lg icon-{{normalizeNetwork network}} network-{{normalizeNetwork network}}"></i> {{username}}</span>
+                    <span class="info text-muted hidden-sm hidden-md hidden-lg">{{network}}</span>
+                  </a>
+                </li>
+              {{/each}}
+              {{/if}}
 
-              <li class="basics-item hidden-print js-download-trigger" style="display: none;">
-                <a id="js-download" href="#download">
-                  <span class="icon text-muted"><i aria-hidden="true" class="icon-lg icon-download"></i></span>
-                  <span class="info">Download this resume</span>
-                </a>
-              </li>
             </ul>
-
-            <hr>
-
-            {{#if profiles}}
-              <ul class="social-profiles nav nav-justified">
-                {{#each profiles}}
-                  <li class="profile-item">
-                    <a href="{{url}}" target="_blank" rel="noreferrer noopener">
-                      <span class="icon"><i aria-hidden="true" class="icon-lg icon-{{normalizeNetwork network}} network-{{normalizeNetwork network}}"></i></span>
-                      <span class="info text-muted hidden-sm hidden-md hidden-lg">{{network}}</span>
-                    </a>
-                  </li>
-                {{/each}}
-              </ul>
-            {{/if}}
 
           {{/resume.basics}}
 
-          <ul class="nav nav-justified hidden-xs hidden-sm">
-            <li><a href="#top" class="text-muted" title="Scroll to top"><i aria-hidden="true" class="icon-chevron-up"></i><span class="sr-only">Go to top</span></a></li>
-          </ul>
+          {{#if resume.skills}}
+            <div id="skills">
+              <h3 class="text-uppercase">
+                <a class="text-muted" href="#skills">
+                  Skills
+                  <span class="anchor-icon" aria-hidden="true"></span>
+                </a>
+              </h3>
+
+              <ul class="list-unstyled">
+                {{#each resume.skills}}
+                  <li class="detail-item row" id="{{itemID 'skill' @index ../resume.skills.length}}">
+                    <div class="col-xs-12 detail-item-content">
+                      <h4>{{name}} {{#if level}}<span class="text-muted">— <em>{{level}}</em></span>{{/if}}</h4>
+
+                      {{#if keywords}}
+                        <ul class="list-inline labels">
+                          {{#keywords}}<li class="label label-keyword">{{.}}</li>{{/keywords}}
+                        </ul>
+                      {{/if}}
+                    </div>
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
+          {{#if resume.languages}}
+            <div id="languages">
+              <h3 class="text-uppercase">
+                <a class="text-muted" href="#languages">
+                  Languages
+                  <span class="anchor-icon" aria-hidden="true"></span>
+                </a>
+              </h3>
+
+              <ul class="list-unstyled">
+                {{#each resume.languages}}
+                  <li>
+                    {{language}}
+                    {{~#if fluency~}}
+                      —&nbsp;<span class="text-muted"><em>{{fluency}}</em></span>
+                    {{/if}}
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
         </div>
       </section>
 
@@ -137,7 +186,7 @@
           <div class="card">
             <div class="detail" id="about">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#about">
+                <a class="text-muted" href="#about">
                   <i aria-hidden="true" class="icon-lg icon-user"></i> About
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -156,10 +205,83 @@
       <section class="col-md-8 card-wrapper details-card-wrapper">
         <div class="card">
 
+          {{#if resume.education}}
+            <div class="detail" id="education">
+              <h3 class="text-uppercase">
+                <a class="text-muted" href="#education">
+                  <i aria-hidden="true" class="icon-lg icon-graduation-cap"></i> Education
+                  <span class="anchor-icon" aria-hidden="true"></span>
+                </a>
+              </h3>
+
+              <ul class="list-unstyled">
+                {{#each resume.education}}
+                  <li class="detail-item row" id="{{itemID 'education' @index ../resume.education.length}}" itemprop="alumniOf" itemscope itemtype="http://schema.org/EducationalOrganization">
+                    <div class="col-sm-9 detail-item-content">
+                      <h4>
+                        <strong>{{area}}</strong>
+                        {{~#if studyType~}}
+                          ,&nbsp;<span>{{studyType}}</span>
+                        {{/if}}
+                      </h4>
+
+                      {{#if startDate}}
+                        <p class="visible-xs-block text-muted">
+                          <small>
+                            <time datetime="{{startDate}}">{{formatYYYY startDate}}</time>
+                            &nbsp;—&nbsp;
+                            {{#if endDate}}
+                              <time datetime="{{endDate}}">{{formatYYYY endDate}}</time>
+                            {{else}}
+                              <time>Present</time>
+                            {{/if}}
+                            &nbsp;<span class="duration-counter"><i aria-hidden="true" class="icon-clock-o"></i>&nbsp;{{humaneDuration startDate endDate}}</span>
+                          </small>
+                        </p>
+                      {{/if}}
+
+                      {{#if institution}}
+                        <p class="text-muted">
+                          <span itemprop="name">{{institution}}</span>
+                          {{~#if gpa~}}
+                            ,&nbsp;GPA: {{gpa}}
+                          {{/if}}
+                        </p>
+                      {{/if}}
+
+                      {{#if courses}}
+                        <ul class="list-inline labels">
+                          {{#courses}}<li class="courses">{{.}}</li>{{/courses}}
+                        </ul>
+                      {{/if}}
+                    </div>
+
+                    {{#if startDate}}
+                      <div class="col-sm-3 detail-item-sidebar text-muted text-center hidden-xs">
+                        <p>
+                          <time datetime="{{startDate}}">{{formatYYYY startDate}}</time>
+                          &nbsp;—&nbsp;
+                          {{#if endDate}}
+                            <time datetime="{{endDate}}">{{formatYYYY endDate}}</time>
+                          {{else}}
+                            <time>Present</time>
+                          {{/if}}
+                        </p>
+                        <p>
+                          <i aria-hidden="true" class="icon-clock-o icon-left"></i>&nbsp;{{humaneDuration startDate endDate}}
+                        </p>
+                      </div>
+                    {{/if}}
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
           {{#if resume.work}}
             <div class="detail" id="experience">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#experience">
+                <a class="text-muted" href="#experience">
                   <i aria-hidden="true" class="icon-lg icon-building"></i> Experience
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -169,7 +291,6 @@
                 {{#each resume.work}}
                   <li class="detail-item row" id="{{itemID 'experience' @index ../resume.work.length}}" itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">
                     <div class="col-sm-9 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'experience' @index ../resume.work.length}}">#</a>
                       <h4>
                         <strong>{{position}}</strong>
                         {{~#if company~}}
@@ -234,7 +355,7 @@
           {{#if resume.volunteer}}
             <div class="detail" id="projects">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#projects">
+                <a class="text-muted" href="#projects">
                   <i aria-hidden="true" class="icon-lg icon-bookmark"></i> Projects
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -244,7 +365,6 @@
                 {{#each resume.volunteer}}
                   <li class="detail-item row" id="{{itemID 'project' @index ../resume.volunteer.length}}" itemprop="memberOf" itemscope itemtype="http://schema.org/Organization">
                     <div class="col-sm-9 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'project' @index ../resume.volunteer.length}}">#</a>
                       <h4>
                         {{#if website}}
                           <a href="{{website}}"  target="_blank" rel="noreferrer noopener" itemprop="url"><strong itemprop="name">{{organization}}</strong></a>
@@ -305,112 +425,10 @@
             </div>
           {{/if}}
 
-          {{#if resume.education}}
-            <div class="detail" id="education">
-              <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#education">
-                  <i aria-hidden="true" class="icon-lg icon-graduation-cap"></i> Education
-                  <span class="anchor-icon" aria-hidden="true"></span>
-                </a>
-              </h3>
-
-              <ul class="list-unstyled">
-                {{#each resume.education}}
-                  <li class="detail-item row" id="{{itemID 'education' @index ../resume.education.length}}" itemprop="alumniOf" itemscope itemtype="http://schema.org/EducationalOrganization">
-                    <div class="col-sm-9 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'education' @index ../resume.education.length}}">#</a>
-                      <h4>
-                        <strong>{{area}}</strong>
-                        {{~#if studyType~}}
-                          ,&nbsp;<span>{{studyType}}</span>
-                        {{/if}}
-                      </h4>
-
-                      {{#if startDate}}
-                        <p class="visible-xs-block text-muted">
-                          <small>
-                            <time datetime="{{startDate}}">{{formatYYYY startDate}}</time>
-                            &nbsp;—&nbsp;
-                            {{#if endDate}}
-                              <time datetime="{{endDate}}">{{formatYYYY endDate}}</time>
-                            {{else}}
-                              <time>Present</time>
-                            {{/if}}
-                            &nbsp;<span class="duration-counter"><i aria-hidden="true" class="icon-clock-o"></i>&nbsp;{{humaneDuration startDate endDate}}</span>
-                          </small>
-                        </p>
-                      {{/if}}
-
-                      {{#if institution}}
-                        <p class="text-muted">
-                          <span itemprop="name">{{institution}}</span>
-                          {{~#if gpa~}}
-                            ,&nbsp;GPA: {{gpa}}
-                          {{/if}}
-                        </p>
-                      {{/if}}
-
-                      {{#if courses}}
-                        <ul class="list-inline labels">
-                          {{#courses}}<li class="label label-keyword">{{.}}</li>{{/courses}}
-                        </ul>
-                      {{/if}}
-                    </div>
-
-                    {{#if startDate}}
-                      <div class="col-sm-3 detail-item-sidebar text-muted text-center hidden-xs">
-                        <p>
-                          <time datetime="{{startDate}}">{{formatYYYY startDate}}</time>
-                          &nbsp;—&nbsp;
-                          {{#if endDate}}
-                            <time datetime="{{endDate}}">{{formatYYYY endDate}}</time>
-                          {{else}}
-                            <time>Present</time>
-                          {{/if}}
-                        </p>
-                        <p>
-                          <i aria-hidden="true" class="icon-clock-o icon-left"></i>&nbsp;{{humaneDuration startDate endDate}}
-                        </p>
-                      </div>
-                    {{/if}}
-                  </li>
-                {{/each}}
-              </ul>
-            </div>
-          {{/if}}
-
-          {{#if resume.skills}}
-            <div class="detail" id="skills">
-              <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#skills">
-                  <i aria-hidden="true" class="icon-lg icon-code"></i> Skills
-                  <span class="anchor-icon" aria-hidden="true"></span>
-                </a>
-              </h3>
-
-              <ul class="list-unstyled">
-                {{#each resume.skills}}
-                  <li class="detail-item row" id="{{itemID 'skill' @index ../resume.skills.length}}">
-                    <div class="col-xs-12 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'skill' @index ../resume.skills.length}}">#</a>
-                      <h4>{{name}} {{#if level}}<span class="text-muted">— <em>{{level}}</em></span>{{/if}}</h4>
-
-                      {{#if keywords}}
-                        <ul class="list-inline labels">
-                          {{#keywords}}<li class="label label-keyword">{{.}}</li>{{/keywords}}
-                        </ul>
-                      {{/if}}
-                    </div>
-                  </li>
-                {{/each}}
-              </ul>
-            </div>
-          {{/if}}
-
           {{#if resume.awards}}
             <div class="detail" id="awards">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#awards">
+                <a class="text-muted" href="#awards">
                   <i aria-hidden="true" class="icon-lg icon-trophy"></i> Awards
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -420,7 +438,6 @@
                 {{#each resume.awards}}
                   <li class="detail-item row" id="{{itemID 'award' @index ../resume.awards.length}}">
                     <div class="col-sm-9 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'award' @index ../resume.awards.length}}">#</a>
                       <h4 itemprop="award">
                         <strong>{{title}}</strong>
                         {{~#if awarder~}}
@@ -457,7 +474,7 @@
           {{#if resume.publications}}
             <div class="detail" id="publications">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#publications">
+                <a class="text-muted" href="#publications">
                   <i aria-hidden="true" class="icon-lg icon-book"></i> Publications
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -467,11 +484,9 @@
                 {{#each resume.publications}}
                   <li class="detail-item row" id="{{itemID 'publication' @index ../resume.publications.length}}" itemscope itemtype="http://schema.org/CreativeWork">
                     <div class="col-sm-9 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'publication' @index ../resume.publications.length}}">#</a>
                       <h4>
                         <strong>
                           {{#if website}}
-                            <a href="{{website}}"  target="_blank" rel="noreferrer noopener" itemprop="url" rel="author"><span itemprop="name">{{name}}</span></a>
                           {{else}}
                             <span itemprop="name">{{name}}</span>
                           {{/if}}
@@ -508,7 +523,7 @@
           {{#if resume.interests}}
             <div class="detail" id="interests">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#interests">
+                <a class="text-muted" href="#interests">
                   <i aria-hidden="true" class="icon-lg icon-heart"></i> Interests
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -518,7 +533,6 @@
                 {{#each resume.interests}}
                   <li class="detail-item row" id="{{itemID 'interest' @index ../resume.interests.length}}">
                     <div class="col-xs-12 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'interest' @index ../resume.interests.length}}">#</a>
                       <h4>{{name}}</h4>
 
                       {{#if keywords}}
@@ -533,38 +547,10 @@
             </div>
           {{/if}}
 
-          {{#if resume.languages}}
-            <div class="detail" id="languages">
-              <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#languages">
-                  <i aria-hidden="true" class="icon-lg icon-comment"></i> Languages
-                  <span class="anchor-icon" aria-hidden="true"></span>
-                </a>
-              </h3>
-
-              <ul class="list-unstyled">
-                {{#each resume.languages}}
-                  <li class="detail-item row" id="{{itemID 'language' @index ../resume.languages.length}}">
-                    <div class="col-xs-12 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'language' @index ../resume.languages.length}}">#</a>
-                      <h4>
-                        <strong>{{language}}</strong>
-                        {{~#if fluency~}}
-                          ,&nbsp;<span>{{fluency}}</span>
-                        {{/if}}
-                      </h4>
-
-                    </div>
-                  </li>
-                {{/each}}
-              </ul>
-            </div>
-          {{/if}}
-
           {{#if resume.references}}
             <div class="detail" id="references">
               <h3 class="text-uppercase">
-                <a class="anchor-link text-muted" href="#references">
+                <a class="text-muted" href="#references">
                   <i aria-hidden="true" class="icon-lg icon-thumbs-up"></i> References
                   <span class="anchor-icon" aria-hidden="true"></span>
                 </a>
@@ -574,7 +560,6 @@
                 {{#each resume.references}}
                   <li class="detail-item row" id="{{itemID 'reference' @index ../resume.references.length}}">
                     <div class="col-xs-12 detail-item-content">
-                      <a class="anchor-link item-anchor" href="#{{itemID 'reference' @index ../resume.references.length}}">#</a>
                       <blockquote>
                         <p itemprop="description">{{nl2br reference}}</p>
                         <footer itemprop="knows" itemscope itemtype="http://schema.org/Person"><cite title="{{name}}" itemprop="description">{{name}}</cite></footer>
